@@ -1,0 +1,43 @@
+apiVersion: security.kubearmor.com/v1
+kind: KubeArmorPolicy
+metadata:
+  name: wisecow-zero-trust
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: wisecow
+  process:
+    matchPaths:
+      - path: /bin/bash
+      - path: /usr/bin/bash
+      - path: /usr/games/cowsay
+      - path: /usr/games/fortune
+      - path: /bin/nc
+      - path: /usr/bin/ncat
+      - path: /bin/cat
+      - path: /usr/bin/tr
+    action: Allow
+  file:
+    matchPaths:
+      - path: /app/wisecow.sh
+        readOnly: true
+    matchDirectories:
+      - dir: /usr/games/
+        readOnly: true
+        recursive: true
+      - dir: /usr/share/games/
+        readOnly: true
+        recursive: true
+      - dir: /etc/
+        readOnly: true
+        recursive: true
+      - dir: /lib/
+        readOnly: true
+        recursive: true
+      - dir: /usr/lib/
+        readOnly: true
+        recursive: true
+    action: Allow
+  capabilities:
+    action: Block
